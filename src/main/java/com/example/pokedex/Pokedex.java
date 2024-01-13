@@ -1,15 +1,18 @@
 package com.example.pokedex;
 
 
-import com.example.pokedex.utilities.ConsoleOutputUtility;
+import com.example.pokedex.controllers.PokemonController;
+import com.example.pokedex.models.PokeViewBuilder;
+import com.example.pokedex.models.Pokemon;
 import com.example.pokedex.utilities.OutputFormat;
+import com.example.pokedex.views.PokemonViewAPI;
 import org.apache.commons.cli.*;
 
 public class Pokedex {
 
     private enum DataSource {WEB_API, LOCAL_DATABASE}
 
-    private static DataSource dataSource = DataSource.WEB_API;
+    private static DataSource dataSource = DataSource. WEB_API;
     private static String databasePath;
     private static OutputFormat outputFormat = OutputFormat.TEXT;
     private static int pokemonId;
@@ -26,26 +29,30 @@ public class Pokedex {
             System.exit(0);
         }
 
+        PokemonController newController = new PokemonController();
+        PokemonViewAPI pokeview = PokeViewBuilder.createPokemonViewAPI(newController.getPokemonwithID(pokemonId));
+
+        System.out.println(pokeview.CommandLineOutput());
 
         /*
            Demo of the command line parsing result, you have access to these static attributes, remove
            this block of code in your application.
-         */
+
         System.out.println("Pokemon ID : " + pokemonId);
         System.out.println("Database source : " + dataSource);
         System.out.println("Database file path : " + databasePath);
         System.out.println("Output format : " + outputFormat);
-
+        */
         /*
             Demo of using a web API and a local SQLite database, remove this block of code in your
             application
-         */
+
         SQLLiteExample.run();
         HTTPRequestExample.run();
-
+        */
 
         // Uncomment this when you are at part 3 of the assignment
-        //ConsoleOutputUtility consoleOutputUtility = new ConsoleOutputUtility(outputFormat, /* PokemonView instance */);
+        // ConsoleOutputUtility consoleOutputUtility = new ConsoleOutputUtility(outputFormat, /* PokemonView instance */);
     }
 
     public static void parseCommandLineArguments(String[] args) throws PokemonCommandLineParsingException, ParseException {
