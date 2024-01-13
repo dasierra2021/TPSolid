@@ -2,27 +2,28 @@ package com.example.pokedex;
 
 
 import com.example.pokedex.controllers.PokemonController;
+import com.example.pokedex.exceptions.PokemonCommandLineParsingException;
+import com.example.pokedex.models.AppOptions;
 import com.example.pokedex.models.PokeViewBuilder;
 import com.example.pokedex.models.Pokemon;
+import com.example.pokedex.utilities.CommandLineParser;
+import com.example.pokedex.utilities.MultipleFormatGenerator;
 import com.example.pokedex.utilities.OutputFormat;
 import com.example.pokedex.views.PokemonViewAPI;
 import com.example.pokedex.views.PokemonViewSQLite;
 import org.apache.commons.cli.*;
+import com.example.pokedex.utilities.ConsoleOutputUtility;
+import com.example.pokedex.utilities.OutputFormat;
 
 public class Pokedex {
 
-    private enum DataSource {WEB_API, LOCAL_DATABASE}
 
-    private static DataSource dataSource = DataSource. WEB_API;
-    private static String databasePath;
-    private static OutputFormat outputFormat = OutputFormat.TEXT;
-    private static int pokemonId;
 
-    public static void main(String[] args) throws ParseException {
-
+    public static void main(String[] args) throws ParseException, PokemonCommandLineParsingException {
+        AppOptions appOptions = new AppOptions();
         /* Parse the command line arguments, this is done for you, keep this code block */
         try {
-            parseCommandLineArguments(args);
+            appOptions = CommandLineParser.parseCommandLineArguments(args);
         } catch (PokemonCommandLineParsingException e) {
             System.err.println(e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
@@ -30,17 +31,18 @@ public class Pokedex {
             System.exit(0);
         }
 
+        int pokemonId = appOptions.getPokemonId();
         PokemonController newController = new PokemonController();
+        MultipleFormatGenerator pokeview = null;
 
-
-        if(dataSource == DataSource.WEB_API) {
-            PokemonViewAPI pokeview = PokeViewBuilder.createPokemonViewAPI(newController.getPokemonwithID(pokemonId));
-            System.out.println(pokeview.CommandLineOutput());
+        if(appOptions.getDataSource() == AppOptions.DataSource.WEB_API) {
+            pokeview = PokeViewBuilder.createPokemonViewAPI(newController.getPokemonwithID(pokemonId));
         }
         else{
-            PokemonViewSQLite pokeview = PokeViewBuilder.createPokemonViewSQLite(newController.getPokemonwithID(pokemonId,databasePath));
-            System.out.println(pokeview.CommandLineOutput());
+            pokeview = PokeViewBuilder.createPokemonViewSQLite(newController.getPokemonwithID(pokemonId, appOptions.getDatabasePath()));
         }
+        ConsoleOutputUtility consoleOutputUtility = new ConsoleOutputUtility(appOptions.getOutputFormat(), pokeview);
+        consoleOutputUtility.makeOutput();
 
 
         /*
@@ -61,60 +63,8 @@ public class Pokedex {
         */
 
         // Uncomment this when you are at part 3 of the assignment
-        // ConsoleOutputUtility consoleOutputUtility = new ConsoleOutputUtility(outputFormat, /* PokemonView instance */);
-    }
 
-    public static void parseCommandLineArguments(String[] args) throws PokemonCommandLineParsingException, ParseException {
-        CommandLineParser parser = new DefaultParser();
-        Options options = new Options();
-        options.addOption("d", "database", true, "Path to a SQLite database containing pokemons");
-        options.addOption("f", "format", true, "Specify the output format, between 'text', 'html' and 'csv'. By default 'text'.");
-
-        // parse the command line arguments
-        CommandLine line = parser.parse(options, args);
-        if (line.hasOption("d")) {
-            dataSource = DataSource.LOCAL_DATABASE;
-            databasePath = line.getOptionValue("d");
-        }
-
-        if (line.hasOption("f")) {
-            String formatArgValue = line.getOptionValue("f");
-            if (formatArgValue.equals("html")) {
-                outputFormat = OutputFormat.HTML;
-            } else if (formatArgValue.equals("csv")) {
-                outputFormat = OutputFormat.CSV;
-            } else if (formatArgValue.equals("text")) {
-                outputFormat = OutputFormat.TEXT;
-            } else {
-                throw new PokemonCommandLineParsingException("Invalid value for the option -f/--format", options);
-            }
-        }
-
-        // Get pokemon ID from remaining arguments
-        String[] remainingArgs = line.getArgs();
-        if (remainingArgs.length < 1) {
-            throw new PokemonCommandLineParsingException("You must provide a pokemon ID", options);
-        }
-        try {
-            pokemonId = Integer.parseInt(remainingArgs[0]);
-        } catch (NumberFormatException e) {
-            throw new PokemonCommandLineParsingException("'" + remainingArgs[0] + "' is not a valid pokemon ID", options);
-        }
     }
 
 
-    static class PokemonCommandLineParsingException extends Exception {
-
-        private Options options;
-
-        public PokemonCommandLineParsingException(String msg, Options options) {
-            super(msg);
-            this.options = options;
-        }
-
-        public Options getOptions() {
-            return options;
-        }
-
-    };
 }
