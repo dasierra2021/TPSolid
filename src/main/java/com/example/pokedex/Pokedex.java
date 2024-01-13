@@ -6,6 +6,7 @@ import com.example.pokedex.models.PokeViewBuilder;
 import com.example.pokedex.models.Pokemon;
 import com.example.pokedex.utilities.OutputFormat;
 import com.example.pokedex.views.PokemonViewAPI;
+import com.example.pokedex.views.PokemonViewSQLite;
 import org.apache.commons.cli.*;
 
 public class Pokedex {
@@ -30,9 +31,17 @@ public class Pokedex {
         }
 
         PokemonController newController = new PokemonController();
-        PokemonViewAPI pokeview = PokeViewBuilder.createPokemonViewAPI(newController.getPokemonwithID(pokemonId));
 
-        System.out.println(pokeview.CommandLineOutput());
+
+        if(dataSource == DataSource.WEB_API) {
+            PokemonViewAPI pokeview = PokeViewBuilder.createPokemonViewAPI(newController.getPokemonwithID(pokemonId));
+            System.out.println(pokeview.CommandLineOutput());
+        }
+        else{
+            PokemonViewSQLite pokeview = PokeViewBuilder.createPokemonViewSQLite(newController.getPokemonwithID(pokemonId,databasePath));
+            System.out.println(pokeview.CommandLineOutput());
+        }
+
 
         /*
            Demo of the command line parsing result, you have access to these static attributes, remove
