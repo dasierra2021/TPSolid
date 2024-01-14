@@ -8,6 +8,7 @@ import org.apache.commons.cli.ParseException;
 import com.example.pokedex.exceptions.PokemonCommandLineParsingException;
 
 public class CommandLineParser {
+    // A class designed to include an already created method in the main that parsed the CLI arguments into information for application
 
     public static AppOptions parseCommandLineArguments(String[] args) throws PokemonCommandLineParsingException, ParseException {
         org.apache.commons.cli.CommandLineParser parser = new DefaultParser();

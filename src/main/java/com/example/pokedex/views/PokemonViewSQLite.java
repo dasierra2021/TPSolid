@@ -5,7 +5,7 @@ import com.example.pokedex.models.PokemonSQLite;
 import com.example.pokedex.utilities.MultipleFormatGenerator;
 
 public class PokemonViewSQLite implements MultipleFormatGenerator {
-
+    // The SQLite view with the different methods for generating the different outputs
     private final PokemonSQLite pokemon;
     public PokemonViewSQLite(PokemonSQLite pokemon){
         this.pokemon=pokemon;

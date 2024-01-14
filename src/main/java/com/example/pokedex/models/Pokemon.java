@@ -1,10 +1,11 @@
 package com.example.pokedex.models;
 
 public class Pokemon {
-    private int id;
-    private String name;
-    private float height;
-    private float weight;
+    //A model designed to contain all the relevant information of a Pokémon
+    private final int id;
+    private final String name;
+    private final float height;
+    private final float weight;
 
     public Pokemon(int id, String name, float height, float weight){
         this.id=id;

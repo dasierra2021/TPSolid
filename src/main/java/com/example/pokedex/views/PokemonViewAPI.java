@@ -4,6 +4,7 @@ import com.example.pokedex.models.Pokemon;
 import com.example.pokedex.utilities.MultipleFormatGenerator;
 
 public class PokemonViewAPI implements MultipleFormatGenerator {
+    // The API view with the different methods for generating the different outputs
     private final Pokemon pokemon;
     public PokemonViewAPI(Pokemon pokemon){
         this.pokemon=pokemon;

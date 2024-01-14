@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
 public class PokemonAPIpokeapi {
+    //The service for obtaining the information from the API and assigning it to a Pokemon
     public Pokemon getPokemonInfobyId (int id){
         String jsonResponse = "";
         try {

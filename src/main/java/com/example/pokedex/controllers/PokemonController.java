@@ -7,8 +7,9 @@ import com.example.pokedex.services.PokemonAPIpokeapi;
 import com.example.pokedex.services.PokemonSQLiteServ;
 
 public class PokemonController {
+    // A controller that handles the high-level requests and carries them to the low-level operations.
     public PokemonSQLite getPokemonwithID(int id, String dbpath){
-        // Search the pokemon using the api
+        // Search the pokemon using the sqlite database
         return new PokemonSQLiteServ().getPokemonInfobyId(id,dbpath);
     }
 

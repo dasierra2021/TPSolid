@@ -3,6 +3,7 @@ import com.example.pokedex.models.PokemonSQLite;
 
 import java.sql.*;
 public class PokemonSQLiteServ {
+    //The service for obtaining the information from the SQLite database and assigning it to a Pokemon
     public PokemonSQLite getPokemonInfobyId(int id, String dbpath) {
         /* Connect to the database */
         Connection conn = null;
